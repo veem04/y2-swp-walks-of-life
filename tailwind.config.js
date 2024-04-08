@@ -12,7 +12,12 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                // sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Rubik', 'Figtree', ...defaultTheme.fontFamily.sans],
+
+            },
+            colors: {
+                'my-green': '#80BD76',
             },
         },
     },
