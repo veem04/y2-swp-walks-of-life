@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use DB;
 
 class RegisteredUserController extends Controller
 {
@@ -36,10 +37,18 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        
+        do {
+            $friend_code = strtoupper(fake()->lexify());
+        } while (DB::table('users')->where('friend_code', $friend_code)->exists());
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'friend_code' => $friend_code,
+            'bio' => '',
+            'image' => 'cover.png',
         ]);
 
         event(new Registered($user));
