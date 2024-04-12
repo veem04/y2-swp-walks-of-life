@@ -51,4 +51,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class, 'user_role');
     }
+
+    public function journeys()
+    {
+        return $this->HasMany(Journey::class);
+    }
 }

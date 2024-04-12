@@ -14,7 +14,7 @@ class JourneyController extends Controller
      */
     public function index()
     {
-        $journeys = Journey::orderBy('created_at', 'desc')->paginate(8);
+        $journeys = Auth::user()->journeys()->orderBy('created_at', 'desc')->paginate(8);
 
         return view("journeys.index", [
             'journeys' => $journeys
