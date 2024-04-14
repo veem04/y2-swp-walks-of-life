@@ -39,6 +39,29 @@
                 <div class="text-xl px-6 font-medium py-4 text-gray-900">
                     {{ __("Your friends that saved the most") }}
                 </div>
+                <div class="text-red-600 px-6 pb-6 font-medium">
+                    can't get this to work right now. problems in dashboardcontroller
+                </div>
+                {{-- <ul class='my-6 flex flex-col place-items-center'>
+                    @php
+                        $count = 0;
+                    @endphp
+                    @forelse ($friends as $friend)
+                    @php
+                        $count += 1;
+                    @endphp
+                        <li class='w-5/6'>
+                            <a href="#">
+                                <x-user-link :user="$friend" :count="$count" />
+                            </a>
+                        </li>
+                    @empty
+                    <div class="px-6 py-3 text-gray-900">
+                        {{ __("No friends have submitted journeys in the past 2 weeks.") }}
+                    </div>
+                    @endforelse
+                    {{ $friends->links() }}
+                </ul> --}}
                 
             </div>
 

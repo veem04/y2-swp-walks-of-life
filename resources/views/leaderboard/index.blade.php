@@ -13,7 +13,7 @@
                 </div>
                 <div class="px-6 py-3 text-gray-900">
                     {{ __("See how your savings stack up against the world's!") }}
-                    <br><span class="text-red-600">{{ __("todo test sorting by emissions, access profiles")}}</span>
+                    <br><span class="text-red-600 font-medium">{{ __("todo access profiles")}}</span>
                 </div>
 
                 <ul class='my-6 flex flex-col place-items-center'>
@@ -26,17 +26,12 @@
                     @endphp
                         <li class='w-5/6'>
                             <a href="#">
-                                <div class='p-3 my-2 text-lg border-2 border-green-600 shadow-md rounded duration-200 hover:bg-green-100'>
-                                    {{ __($count) }}
-                                    {{ __($user->name) }}<br>
-                                    {{ __("Saved $user->total_saved kg over the past 2 weeks") }}
-                                </div>
+                                <x-user-link :user="$user" :count="$count" />
                             </a>
-                            
                         </li>
                     @empty
                     <div class="px-6 py-3 text-gray-900">
-                        {{ __("No users found. ...what?") }}
+                        {{ __("No users have submitted journeys in the past 2 weeks.") }}
                     </div>
                     @endforelse
                     {{ $users->links() }}

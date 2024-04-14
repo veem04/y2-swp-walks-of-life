@@ -10,25 +10,20 @@ use DB;
 class LeaderboardController extends Controller
 {
     public function index(){
-        $users = User::orderBy('created_at', 'desc')->paginate(8);
-
+        
         $twoWeeksAgo = strtotime('-2 weeks');
         $twoWeeksAgoStr = date('Y-m-d', $twoWeeksAgo);
-        // dd($twoWeeksAgoStr);
-        foreach ($users as $user) {
-            $co2_values = DB::table('journeys')
-                ->where('user_id', '=', $user->id)
-                ->where('date', '>', $twoWeeksAgoStr)
-                ->get();
-            
-            $total_saved = 0;
-            foreach ($co2_values as $key => $val) {
-                $total_saved += $val->max_co2 - $val->co2_emissions;
-            }
-            $user->total_saved = $total_saved;
 
-            $users->sortBy('total_saved');
-        }
+        // god save me
+        $users = DB::table('users')
+                    ->join('journeys', 'users.id', '=', 'journeys.user_id')
+                    ->groupBy('user_id')
+                    ->selectRaw('`users`.*, SUM(`journeys`.`max_co2`) - SUM(`co2_emissions`) AS `co2_saved`')
+                    ->where('date', '>', $twoWeeksAgoStr)
+                    ->orderBy('co2_saved', 'desc')
+                    ->paginate(8);
+        // dd($users);
+
         return view('leaderboard.index', [
             'users' => $users
         ]);
