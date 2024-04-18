@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::createMergeView(
+        Schema::createOrReplaceMergeView(
             'friends_view',
-            [(new User())->acceptedFriendsTo(), 
-            (new User())->acceptedFriendsFrom()]
+            [(new User())->acceptedFriendsTo()->withPivot('accepted'), 
+            (new User())->acceptedFriendsFrom()->withPivot('accepted')]
         );
     }
 
@@ -25,6 +25,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropView('friends_view');
+        Schema::createOrReplaceMergeView(
+            'friends_view',
+            [(new User())->acceptedFriendsTo(), 
+            (new User())->acceptedFriendsFrom()]
+        );
     }
 };

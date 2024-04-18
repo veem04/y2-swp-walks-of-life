@@ -36,8 +36,25 @@
 
             <!-- Page Content -->
             <main>
+                @if (session('status'))
+                <div class="max-w-7xl mx-auto bg-green-100 border border-my-green text-green-800 px-4 py-3 mt-8 rounded relative" role="alert">
+                    <span class="block sm:inline">{{ session('status') }}</span>
+                </div>
+                @endif
                 {{ $slot }}
             </main>
         </div>
     </body>
+    <footer class="bg-my-green flex justify-center">
+        <div class="w-3/4 py-5 flex justify-between text-white font-light text-2xl">
+            <a href="{{ route('dashboard') }}">
+                © Walks of life 2024
+            </a>
+            {{-- <form action="{{route('logout') }}" method="post">
+                <button type="submit">
+                    {{ __('Log Out') }}
+                </button>
+            </form> --}}
+        </div>
+    </footer>
 </html>

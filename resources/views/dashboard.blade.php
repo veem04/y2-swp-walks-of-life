@@ -24,15 +24,24 @@
                 <div class="text-xl px-6 font-medium py-4 text-gray-900">
                     {{ __("Your most recent journeys") }}
                 </div>
-                <ul class='flex flex-col place-items-center mb-5'>
-                    @forelse ($journeys as $journey)
-                        <x-journey-link :journey="$journey"/>
-                    @empty
-                    <div class="px-6 py-3 text-gray-900">
+                @if (sizeof($journeys) === 0)
+                    <div class="px-6 pb-6 text-gray-900">
                         {{ __("No journeys found.") }}
                     </div>
-                    @endforelse 
-                </ul>
+                @else
+                    <ul class='flex flex-col place-items-center mb-5'>
+                        @foreach ($journeys as $journey)
+                            <x-journey-link :journey="$journey" />
+                        @endforeach
+                    </ul>
+                    <div class="flex flex-col place-items-center">
+                        <div class='w-5/6 mb-5'>
+                            <a href='{{ route('journeys.create') }}' class='px-3 py-3 font-medium text-white bg-my-green rounded-md duration-200 hover:bg-green-700'>Log a journey</a>
+                        </div>
+                    </div>
+                @endif
+                
+                
             </div>
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg my-5">
