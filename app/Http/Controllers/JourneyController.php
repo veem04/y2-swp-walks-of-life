@@ -53,8 +53,42 @@ class JourneyController extends Controller
         $journey->start_lng = $request->start_lng;
         $journey->end_lng = $request->end_lng;
         $journey->date = date('Y-m-d');
-        $journey->distance = 20;
-        $journey->co2_emissions = 0;
+        
+
+        $coordsString = "[[$journey->start_lng,$journey->start_lat],[$journey->end_lng,$journey->end_lat]]";
+
+        // start API call
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, "https://api.openrouteservice.org/v2/directions/driving-car/json");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_HEADER, FALSE);
+
+        curl_setopt($ch, CURLOPT_POST, TRUE);
+
+        curl_setopt($ch, CURLOPT_POSTFIELDS, '{"coordinates":' . $coordsString . ',"instructions":"false","geometry":"false"}');
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        "Accept: application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8",
+        "Authorization: " . env('ORS_API_KEY'),
+        "Content-Type: application/json; charset=utf-8"
+        ));
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+        // end API call
+
+        $routeDetails = json_decode($response);
+        
+        if(isset($routeDetails->routes[0]->summary->distance)){
+            $journey->distance = $routeDetails->routes[0]->summary->distance / 1000;
+        }else{
+            return redirect()
+                ->route('journeys.create')
+                ->with('status', 'The distance between the points could not be calculated.');
+        }
+
+        $journey->method_id = $request->method;
 
         // this estimation is based off a Gasoline-Powered Ford F-150
         // https://earth911.com/eco-tech/carbon-calculating-getting-an-accurate-measure-of-carbon-emissions-from-driving/
@@ -65,10 +99,13 @@ class JourneyController extends Controller
         $max_co2 = $gallons * $carbon_content;
         $journey->max_co2 = $max_co2;
 
+        $method = Method::findOrFail($journey->method_id);
+        $journey->co2_emissions = $max_co2 * $method->co2_constant;
+        
         $journey->cost = 0;
         $journey->user_id = Auth::user()->id;
-        $journey->method_id = $request->method;
-
+        
+        // dd($journey);
         $journey->save();
 
         return redirect()
@@ -119,9 +156,41 @@ class JourneyController extends Controller
         $journey->end_lat = $request->end_lat;
         $journey->start_lng = $request->start_lng;
         $journey->end_lng = $request->end_lng;
-        // $journey->date = date('Y-m-d');
-        $journey->distance = 20;
-        $journey->co2_emissions = 0;
+        
+        $coordsString = "[[$journey->start_lng,$journey->start_lat],[$journey->end_lng,$journey->end_lat]]";
+
+        // start API call
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, "https://api.openrouteservice.org/v2/directions/driving-car/json");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_HEADER, FALSE);
+
+        curl_setopt($ch, CURLOPT_POST, TRUE);
+
+        curl_setopt($ch, CURLOPT_POSTFIELDS, '{"coordinates":' . $coordsString . ',"instructions":"false","geometry":"false"}');
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        "Accept: application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8",
+        "Authorization: " . env('ORS_API_KEY'),
+        "Content-Type: application/json; charset=utf-8"
+        ));
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+        // end API call
+
+        $routeDetails = json_decode($response);
+
+        if(isset($routeDetails->routes[0]->summary->distance)){
+            $journey->distance = $routeDetails->routes[0]->summary->distance / 1000;
+        }else{
+            return redirect()
+                ->route('journeys.edit', $journey->id)
+                ->with('status', 'The distance between the points could not be calculated.');
+        }
+        
+        $journey->method_id = $request->method;
 
         // this estimation is based off a Gasoline-Powered Ford F-150
         // https://earth911.com/eco-tech/carbon-calculating-getting-an-accurate-measure-of-carbon-emissions-from-driving/
@@ -132,8 +201,10 @@ class JourneyController extends Controller
         $max_co2 = $gallons * $carbon_content;
         $journey->max_co2 = $max_co2;
 
+        $method = Method::findOrFail($journey->method_id);
+        $journey->co2_emissions = $max_co2 * $method->co2_constant;
+
         $journey->cost = 0;
-        $journey->method_id = $request->method;
 
         $journey->save();
 
