@@ -26,12 +26,16 @@
                 <ul class='my-6 flex flex-col place-items-center'>
                     @forelse ($friends as $user)
                         <li class='w-5/6'>
-                            <a href="#">
-                                <div class='p-3 my-2 text-lg flex justify-between items-center border-2 border-green-600 shadow-md rounded duration-200 hover:bg-green-100'>
-                                    <div>
-                                        <span class="font-medium">{{ __($user->name) }}</span><br>
-                                        {{ __("Friend code: " . $user->friend_code) }}
+                            <a href="{{ route("profile.show", $user->id) }}">
+                                <div class='py-3 px-4 my-2 text-lg flex justify-between items-center border-2 border-green-600 shadow-md rounded duration-200 hover:bg-green-100'>
+                                    <div class="flex gap-6">
+                                        <img src="{{ asset('storage/images/'.$user->image) }}" alt="" class="max-h-14">
+                                        <div>
+                                            <span class="font-medium">{{ __($user->name) }}</span><br>
+                                            {{ __("Friend code: " . $user->friend_code) }}
+                                        </div>
                                     </div>
+                                    
                                     <form action="{{ route('friends.destroy', $user )}}" method="post">
                                         @csrf
                                         @method('DELETE')
@@ -59,7 +63,7 @@
                         <ul class='my-6 flex flex-col place-items-center'>
                             @foreach ($incomingRequests as $user)
                                 <li class='w-5/6'>
-                                    <a href="#">
+                                    <a href="{{ route("profile.show", $user->id) }}">
                                         <div class='p-3 my-2 text-lg flex justify-between items-center border-2 border-green-600 shadow-md rounded duration-200 hover:bg-green-100'>
                                             <div>
                                                 <span class="font-medium">{{ __($user->name) }}</span><br>
@@ -99,7 +103,7 @@
                         <ul class='my-6 flex flex-col place-items-center'>
                             @foreach ($outgoingRequests as $user)
                                 <li class='w-5/6'>
-                                    <a href="#">
+                                    <a href="{{ route("profile.show", $user->id) }}">
                                         <div class='p-3 my-2 text-lg flex justify-between items-center border-2 border-green-600 shadow-md rounded duration-200 hover:bg-green-100'>
                                             <div>
                                                 <span class="font-medium">{{ __($user->name) }}</span><br>

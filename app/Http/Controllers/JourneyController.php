@@ -130,6 +130,13 @@ class JourneyController extends Controller
      */
     public function edit(Journey $journey)
     {
+        if($journey->user->id !== Auth::id())
+        {
+            return redirect()
+                ->route('journeys.index')
+                ->with('status', 'You cannot edit another user\'s journeys!');
+        }
+
         $methods = Method::orderBy('co2_constant', 'asc')->get();
         return view("journeys.edit", [
             'journey' => $journey,
@@ -142,6 +149,13 @@ class JourneyController extends Controller
      */
     public function update(Request $request, Journey $journey)
     {
+        if($journey->user->id !== Auth::id())
+        {
+            return redirect()
+                ->route('journeys.index')
+                ->with('status', 'You cannot edit another user\'s journeys!');
+        }
+
         $rules = [
             'start_lat' => 'required|numeric|min:-90|max:90',
             'end_lat' => 'required|numeric|min:-90|max:90',
@@ -221,6 +235,13 @@ class JourneyController extends Controller
      */
     public function destroy(Journey $journey)
     {
+        if($journey->user->id !== Auth::id())
+        {
+            return redirect()
+                ->route('journeys.index')
+                ->with('status', 'You cannot edit another user\'s journeys!');
+        }
+
         $journey->delete();
         return redirect()
             ->route('journeys.index')

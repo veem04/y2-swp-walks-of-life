@@ -14,7 +14,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg px-6">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg px-6 pb-5">
                 <div class="font-semibold text-xl py-4 text-gray-900">
                     {{ __("Journey View") }}
                 </div>
@@ -29,7 +29,8 @@
                         {{ __("method: $method->name ") }}
                     </div>
                 </div>
-                <div class="mb-5 mt-3 flex">
+                @if ($journey->user == Auth::user())
+                <div class="mt-3 flex">
                     <a href="{{ route('journeys.edit', $journey ) }}" class="px-3 py-3 mr-5 font-medium text-white bg-my-green rounded-md duration-200 hover:bg-green-700">
                         Edit this journey
                     </a>
@@ -45,11 +46,8 @@
                             Delete this journey
                         </button>
                     </form>
-
-                    {{-- <a href="{{ route('journeys.destroy', $journey ) }}" class="px-3 py-3 font-medium text-white bg-red-400 rounded-md duration-200 hover:bg-red-700">
-                        
-                    </a> --}}
                 </div>
+                @endif
             </div>
         </div>
     </div>
